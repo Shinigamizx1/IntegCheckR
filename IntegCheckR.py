@@ -18,12 +18,12 @@ def check_file_integrity(file_path, stored_hash):
 
 if __name__ == "__main__":
     # Make sure to include (r'file_path') to fix escape backslashes for windows.
-    file_path = r'C:\Users\chael\Desktop\CYB333\TEST1.docx'
+    file_path = r'filepath_to_the_file'
 
     # Get Hash value from PowerShell
     # Get-Filehash C:\File_path
     # Everytime the file is altered, get new hash value from PowerShell to adjust stored_hash_value
-    stored_hash_value = 'DA27A5AB01B8CDE5CE8F3DC2A36F58EE36BDD80490CD0AB3428A3514A4BD4616'
+    stored_hash_value = 'hash_value_from_PowerShell'
 
     if os.path.exists(file_path):
         if check_file_integrity(file_path, stored_hash_value):
