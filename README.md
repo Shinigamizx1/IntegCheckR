@@ -1,34 +1,4 @@
-import hashlib
-import os
-# Line 9 has to have .upper() in order to convert hash to all upper case; otherwise it will return all lower case and it will not work properly.
-def calculate_file_hash(file_path):
-    sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        for byte_block in iter(lambda: f.read(4096), b""):
-            sha256.update(byte_block)
-    return sha256.hexdigest().upper()
-
-# Lines 14 and 15 can be removed after checkin to see if the code works properly.
-# Lines 14 and 15 can give information to attackers if not removed.
-def check_file_integrity(file_path, stored_hash):
-    current_hash = calculate_file_hash(file_path)
-    print(f"Calculated Hash: {current_hash}")
-    print(f"Stored Hash: {stored_hash}")
-    return current_hash == stored_hash
-
-if __name__ == "__main__":
-    # Make sure to include (r'file_path') to fix escape backslashes for windows.
-    file_path = r'file_path'
-
-    # Get Hash value from PowerShell
-    # Get-Filehash C:\File_path
-    # Everytime the file is altered, get new hash value from PowerShell to adjust stored_hash_value
-    stored_hash_value = 'hash_value'
-
-    if os.path.exists(file_path):
-        if check_file_integrity(file_path, stored_hash_value):
-            print("File integrity is intact.")
-        else:
-            print("File integrity has been compromised.")
-    else:
-        print("File not found.")
+The IntegCheckR.py is a Python script I created to help with security automation in cybersecurity. IntegCheckR checks file integrity by using the hash value to see if the file has been tampered with or changed. The SHA256 value of a file is gathered using PowerShell to generate a  hash value for the file you wish to monitor. The SHA256 value that PowerShell generates is the value for the ‘stored_hash_value,’ which is stored inside the script and used as the baseline to compare the current hash value of the file.
+	The two modules that are imported at the beginning of the script which allows it to function correctly, are ‘hashlib’ and ‘os.’ The ‘hashlib’ module allows the script to use the secure has and message digest algorithms, including SHA256 (Welcome to Python.org, 2023). The ‘os’ module allows the script to interact with the Operating System that the IDE is running on; in this case, it is used to access the file in the provided location. The first portion of the script determines the type of hash value that will be used to calculate the hash of the file, and then the ‘open’ finds the file when provided with the file path in read-only binary mode. The SHA256 algorithm is calculated using the hash of the file in blocks of 4096 bytes and is returned in the ‘sha256.hexdigest().upper().’ I included the .upper() because the SHA256 hash value provided by PowerShell is in all upper case and the value gathered by ‘hashlib’ is all lower case. This resulted in the printed response, "File integrity has been compromised.” Including the .upper() fixed that issue by making both hash values in upper case.
+	The execution of the code in the following parts of the script handles the file path to the given file and the stored hash value that PowerShell provides. The error handling that is included in this script allows for three different types of responses to be returned to the user when running the script. The first response, "File integrity is intact,” informs the user that the file has not been tampered with and passes the hash value verification. The second response, “File integrity has been compromised,” informs the user that the file's contents have changed since the hash values do not match the ‘stored_hash_value.’ Lastly, “File not found” informs the user that the file provided doesn’t exist in the directory and must double check the file path.
+	It is important to note that the testing on this code was done on a Windows 11 system; therefore, the comments that are provided in the code are there to ensure that the code runs correctly on a Windows 11 system. IntegCheckR.py is the completed python script I created to help alleviate the mundane actions that cybersecurity professionals conduct. This script can be used to check high integrity reliant files such as boot configurations to ensure that security is intact for the system
